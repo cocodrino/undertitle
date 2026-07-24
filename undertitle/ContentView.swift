@@ -2,65 +2,123 @@
 //  ContentView.swift
 //  undertitle
 //
-//  Created by Carlos Laguna Medina on 15/6/26.
+//  Main screen: drop a video, pick a language, watch progress, save the .srt.
 //
 
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @State private var viewModel = TranscriptionViewModel()
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+        VStack(alignment: .leading, spacing: 20) {
+            header
+
+            DropView(
+                videoName: viewModel.videoName,
+                onDrop: { viewModel.videoDropped($0) },
+                onInvalid: { /* handled by state below */ }
+            )
+            .disabled(viewModel.state.isWorking)
+
+            languagePicker
+
+            statusSection
+
+            Spacer(minLength: 0)
+        }
+        .padding(24)
+        .frame(width: 460)
+        .frame(minHeight: 440)
+    }
+
+    // MARK: - Sections
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Undertitle")
+                .font(.largeTitle.bold())
+            Text("Subtítulos .SRT desde tu video, on-device.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private var languagePicker: some View {
+        HStack {
+            Text("Idioma")
+                .foregroundStyle(.secondary)
+            Picker("Idioma", selection: $viewModel.selectedLanguage) {
+                ForEach(TranscriptionLanguage.allCases) { language in
+                    Text(language.displayName).tag(language)
+                }
+            }
+            .labelsHidden()
+            .pickerStyle(.menu)
+            .disabled(viewModel.state.isWorking)
+        }
+    }
+
+    @ViewBuilder
+    private var statusSection: some View {
+        switch viewModel.state {
+        case .idle:
+            EmptyView()
+
+        case .extractingAudio:
+            progressRow(label: "Preparando audio…", value: nil)
+
+        case .preparingModel:
+            progressRow(label: "Preparando el modelo de idioma…", value: nil)
+
+        case .downloadingModel:
+            progressRow(label: "Descargando modelo de idioma (solo la primera vez)…", value: nil)
+
+        case .transcribing(let progress):
+            progressRow(label: "Transcribiendo… \(Int(progress * 100))%", value: progress)
+
+        case .completed(_, let suggestedName):
+            VStack(alignment: .leading, spacing: 12) {
+                Label("Transcripción lista", systemImage: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+                HStack {
+                    Button {
+                        viewModel.saveSRT()
                     } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                        Label("Descargar \(suggestedName)", systemImage: "square.and.arrow.down")
                     }
-                }
-                .onDelete(perform: deleteItems)
-            }
-#if os(macOS)
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-#endif
-            .toolbar {
-#if os(iOS)
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-#endif
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
+                    .buttonStyle(.borderedProminent)
+
+                    Button("Otro video") { viewModel.reset() }
+                        .buttonStyle(.bordered)
                 }
             }
-        } detail: {
-            Text("Select an item")
+
+        case .failed(let message):
+            VStack(alignment: .leading, spacing: 12) {
+                Label(message, systemImage: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.red)
+                Button("Reintentar") { viewModel.start() }
+                    .buttonStyle(.bordered)
+            }
         }
     }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
+    private func progressRow(label: String, value: Double?) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if let value {
+                ProgressView(value: value)
+            } else {
+                ProgressView()
+                    .progressViewStyle(.linear)
             }
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }

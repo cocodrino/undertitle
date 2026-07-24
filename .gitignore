@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+*.moved-aside
+xcuserdata/
+*.xccheckout
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# AI / tooling scratch (not part of the app)
+.claude/
+.serena/
+.pi/
+.recap/
+
+# Local sample media (not distributed)
+sample/
