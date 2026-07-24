@@ -7,6 +7,8 @@
 **No cloud. No uploads. No API keys. No subscriptions.**
 Your video never leaves your computer.
 
+[![Download](https://img.shields.io/badge/⤓_Download-latest_release-2ea44f?style=for-the-badge)](https://github.com/cocodrino/undertitle/releases/latest)
+
 ![Platform](https://img.shields.io/badge/platform-macOS%2026%2B-000000?logo=apple)
 ![Swift](https://img.shields.io/badge/Swift-6.2-F05138?logo=swift&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-3DA639)
@@ -56,27 +58,29 @@ minutes."
 
 ## 🚀 Get started
 
-> **Heads up:** there's no prebuilt download yet, so you'll build it from source.
-> It takes about two minutes and you only need a free copy of Xcode.
-
 ### 1. Install
 
-**Requirements**
-- A Mac running **macOS 26 (Tahoe)** or later
-- **Xcode 26** or later ([free on the Mac App Store](https://apps.apple.com/app/xcode/id497799835))
+**Requirements:** a Mac running **macOS 26 (Tahoe)** or later, on **Apple Silicon** (M1 or newer).
 
-**Steps**
+#### Option A — Download the app (easiest)
+
+1. Grab the latest **[`Undertitle-macos-arm64.zip`](https://github.com/cocodrino/undertitle/releases/latest)** from Releases.
+2. Unzip it and drag **`undertitle.app`** into your **Applications** folder.
+3. **First launch only:** right-click the app → **Open** → **Open**.
+
+> That right-click step is needed just once, because the app isn't notarized by
+> Apple (it's a free, open-source build). After that it opens normally.
+
+#### Option B — Build from source
+
+Free, and takes about two minutes — you just need [Xcode 26+](https://apps.apple.com/app/xcode/id497799835):
+
 ```bash
 git clone https://github.com/cocodrino/undertitle.git
 cd undertitle
 open undertitle.xcodeproj
 ```
 In Xcode, press **▶ Run** (or ⌘R). The app launches. Done.
-
-> Prefer the terminal? You can build a runnable app bundle with:
-> ```bash
-> xcodebuild -project undertitle.xcodeproj -scheme undertitle -destination 'platform=macOS' build
-> ```
 
 ### 2. Use it
 
@@ -152,7 +156,8 @@ xcodebuild -project undertitle.xcodeproj -scheme undertitle -destination 'platfo
 - [ ] More languages beyond English & Spanish
 - [ ] Optional AI pass to polish punctuation and proper nouns
 - [ ] In-app subtitle preview & editing
-- [ ] A notarized, downloadable release
+- [ ] A notarized release (double-click to open, no right-click needed)
+- [ ] Universal binary (Intel + Apple Silicon)
 
 ## 🤝 Contributing
 
