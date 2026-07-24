@@ -18,6 +18,10 @@ xcuserdata/
 .build/
 .swiftpm/
 
+# Release build artifacts
+build_release/
+dist/
+
 # AI / tooling scratch (not part of the app)
 .claude/
 .serena/
