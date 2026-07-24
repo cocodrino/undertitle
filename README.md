@@ -100,7 +100,7 @@ state transitions (Swift Testing).
 
 ## License
 
-[MIT](LICENSE) © 2026 Carlos Laguna Medina
+[MIT](LICENSE) © 2026 cocodrino
 
 ---
 
