@@ -1,107 +1,174 @@
-# Undertitle
+<div align="center">
 
-**Drop a video, get perfectly-synced `.srt` subtitles. 100% on-device, private, and offline — powered by Apple's on-device speech engine. English & Spanish.**
+# 🎬 Undertitle
 
-Undertitle is a tiny, focused macOS app: drag a video onto the window, pick a
-language, and download a subtitle file with accurate, word-level timing. Your
-video never leaves your Mac — there is no cloud, no upload, no API key.
+### Drop a video → get perfectly-synced subtitles. On your Mac. Offline. In seconds.
+
+**No cloud. No uploads. No API keys. No subscriptions.**
+Your video never leaves your computer.
+
+![Platform](https://img.shields.io/badge/platform-macOS%2026%2B-000000?logo=apple)
+![Swift](https://img.shields.io/badge/Swift-6.2-F05138?logo=swift&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-3DA639)
+![100% on-device](https://img.shields.io/badge/100%25-on--device-2ea44f)
+
+</div>
 
 ---
 
-## Why
+Undertitle is a dead-simple macOS app that turns any video into an `.srt`
+subtitle file — using the same on-device speech engine that powers Siri. Drag a
+video in, pick a language, and download subtitles that actually stay in sync.
 
-Generating subtitles usually means uploading your footage to a cloud service
-(privacy, cost, an internet connection) or wrangling command-line tools.
-Undertitle does it locally using the same on-device speech models macOS ships
-with, so it is **fast, free, and private by design**.
-
-## Features
-
-- 🎬 **Drag & drop** any video file
-- 🗣️ **On-device transcription** via Apple's `SpeechAnalyzer` / `SpeechTranscriber`
-- ⏱️ **Word-level timing** → subtitles that actually stay in sync
-- 🌎 **English & Spanish** (more languages planned)
-- 📊 **Live progress** while it works
-- 📄 **Standard `.srt` export** you can drop into any video player or editor
-- 🔒 **Offline & private** — nothing is uploaded, ever
-
-## How it works
+Because it runs **100% on your Mac**, it's private by design and works on a
+plane with no Wi-Fi. No account, no credit card, no "you've used your 10 free
+minutes."
 
 ```
-🎬 Video
-  │  AVFoundation (AVAssetReader, streaming)
-  ▼
-🔊 Audio buffers
-  │  Apple SpeechAnalyzer + SpeechTranscriber (on-device)
-  ▼
-📝 Text + per-word timestamps (audioTimeRange)
-  │  CueSegmenter — split into properly sized, synced cues
-  ▼
-📄 .srt file
+┌───────────────────────────────────────────────┐
+│  Undertitle                                     │
+│                                                 │
+│   ┌─────────────────────────────────────────┐  │
+│   │                                         │  │
+│   │        🎬  Drag your video here         │  │
+│   │        MP4, MOV, and more               │  │
+│   │                                         │  │
+│   └─────────────────────────────────────────┘  │
+│                                                 │
+│   Language:  [ English ▾ ]                      │
+│                                                 │
+│   Transcribing…  ██████████░░░░░  62%           │
+│                                                 │
+│   [ ⤓ Download subtitles.srt ]                  │
+│                                                 │
+└───────────────────────────────────────────────┘
 ```
 
-The transcription engine returns speech in large finalized blocks, so Undertitle
-re-segments them using the per-word timing into short cues (split on sentence
-boundaries, capped at ~6s / ~84 characters) — the difference between subtitles
-that drift and subtitles that land.
+## ✨ Why you'll like it
 
-## Requirements
+- 🔒 **Truly private** — nothing is uploaded, ever. It works fully offline.
+- ⏱️ **Actually in sync** — word-level timing means subtitles land on the words,
+  not 30 seconds late.
+- 🖱️ **Ridiculously simple** — drag, pick a language, download. That's it.
+- 🌎 **English & Spanish** today (more on the way).
+- 💸 **Free & open source** — MIT licensed, no strings attached.
+- ⚡ **Fast** — powered by Apple's on-device speech models, tuned for Apple Silicon.
 
-- **macOS 26 (Tahoe) or later** — `SpeechAnalyzer` / `SpeechTranscriber` are not
-  available on earlier versions.
-- **Xcode 26+** to build from source.
+## 🚀 Get started
 
-> On first use of a language, macOS downloads its speech model on-device (a
-> one-time step). After that, transcription runs fully offline.
+> **Heads up:** there's no prebuilt download yet, so you'll build it from source.
+> It takes about two minutes and you only need a free copy of Xcode.
 
-## Build & run
+### 1. Install
 
+**Requirements**
+- A Mac running **macOS 26 (Tahoe)** or later
+- **Xcode 26** or later ([free on the Mac App Store](https://apps.apple.com/app/xcode/id497799835))
+
+**Steps**
 ```bash
-git clone https://github.com/<your-username>/undertitle.git
+git clone https://github.com/cocodrino/undertitle.git
 cd undertitle
 open undertitle.xcodeproj
 ```
+In Xcode, press **▶ Run** (or ⌘R). The app launches. Done.
 
-Then press **⌘R** in Xcode. Or from the command line:
+> Prefer the terminal? You can build a runnable app bundle with:
+> ```bash
+> xcodebuild -project undertitle.xcodeproj -scheme undertitle -destination 'platform=macOS' build
+> ```
 
-```bash
-xcodebuild -project undertitle.xcodeproj -scheme undertitle -destination 'platform=macOS' build
+### 2. Use it
+
+1. **Drag a video** onto the drop area (or the whole window).
+2. **Pick the language** spoken in the video — English or Spanish.
+3. **Wait** while it transcribes. A progress bar shows how it's going.
+4. **Click "Download"** and choose where to save your `.srt` file.
+
+That's the whole flow. Open the `.srt` in your video player (VLC, IINA,
+QuickTime with a plugin), or import it into any video editor.
+
+> **First time using a language?** macOS downloads that language's speech model
+> once (a quick, one-time step that needs internet). Every transcription after
+> that runs completely offline.
+
+## 🧠 How it works
+
+```
+🎬 Video
+  │  AVFoundation reads the audio track (streaming — even hours-long videos)
+  ▼
+🔊 Audio
+  │  Apple SpeechAnalyzer + SpeechTranscriber, on-device
+  ▼
+📝 Text + a timestamp for every word
+  │  CueSegmenter splits it into short, readable, perfectly-timed cues
+  ▼
+📄 subtitles.srt
 ```
 
-## Architecture
+The speech engine returns text in big chunks, so Undertitle re-cuts it using the
+per-word timing into subtitle-sized lines (broken at sentence ends, capped at
+~6 seconds each). That's the difference between subtitles that drift and
+subtitles that hit every line on time.
 
-Clean, layered, and testable — no UI logic mixed into the transcription pipeline:
+## 📦 Sharing a build with a friend (optional)
 
-| Layer | Type | Responsibility |
-|-------|------|----------------|
+Want to hand the app to someone without Xcode? In Xcode: **Product → Archive →
+Distribute App → Custom → Copy App**, then zip the resulting `Undertitle.app`.
+
+> Because the app isn't notarized by Apple, the first time they open it they'll
+> need to **right-click the app → Open → Open** to get past Gatekeeper. This is
+> normal for open-source apps you build yourself.
+
+## 🏗️ Architecture
+
+<details>
+<summary>Clean, layered, and fully testable — click to expand</summary>
+
+<br>
+
+| Layer | Pieces | Responsibility |
+|-------|--------|----------------|
 | **Models** | `TranscriptSegment`, `TranscriptionLanguage`, `TranscriptionState`, `TranscriptionError` | Plain data + the single state that drives the UI |
 | **Services** | `AudioExtractor`, `BufferConverter`, `SpeechTranscriptionService`, `CueSegmenter`, `SRTExporter` | The pipeline — each piece independent and unit-tested |
 | **ViewModel** | `TranscriptionViewModel` (`@Observable`) | Orchestrates the pipeline, publishes state |
 | **Views** | `DropView`, `ContentView` | SwiftUI, renders entirely from state |
 
-Transcription is exposed through a `Transcribing` protocol, so the view model is
-tested against a mock without touching the Speech framework.
+Transcription sits behind a `Transcribing` protocol, so the view model is tested
+against a mock without ever touching the Speech framework. The heavy audio work
+is marked `nonisolated` so it runs off the main actor and never freezes the UI.
 
-## Tests
-
+Run the tests:
 ```bash
 xcodebuild -project undertitle.xcodeproj -scheme undertitle -destination 'platform=macOS' test
 ```
 
-Covers SRT formatting, audio extraction, the cue segmenter, and the view model's
-state transitions (Swift Testing).
+</details>
 
-## Roadmap
+## 🗺️ Roadmap
 
 - [ ] Automatic language detection
 - [ ] More languages beyond English & Spanish
-- [ ] Optional LLM pass to polish punctuation and proper nouns
+- [ ] Optional AI pass to polish punctuation and proper nouns
 - [ ] In-app subtitle preview & editing
+- [ ] A notarized, downloadable release
 
-## License
+## 🤝 Contributing
+
+Issues and pull requests are welcome! Whether it's a bug, a new language, or a UI
+tweak — open an issue to start the conversation.
+
+## 📄 License
 
 [MIT](LICENSE) © 2026 cocodrino
 
 ---
 
-*Built with Apple's on-device Speech framework. Undertitle is not affiliated with Apple.*
+<div align="center">
+
+*Built with Apple's on-device Speech framework. Not affiliated with Apple.*
+
+**If Undertitle saved you time, consider giving it a ⭐ — it helps other people find it.**
+
+</div>
