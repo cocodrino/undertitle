@@ -9,14 +9,14 @@ import Foundation
 
 /// A language the user can pick for transcription. Maps to a BCP-47 `Locale`
 /// understood by `SpeechTranscriber`.
-nonisolated enum TranscriptionLanguage: String, CaseIterable, Identifiable, Sendable {
+public nonisolated enum TranscriptionLanguage: String, CaseIterable, Identifiable, Sendable {
     case english
     case spanish
 
-    var id: String { rawValue }
+    public var id: String { rawValue }
 
     /// Human-readable name shown in the picker.
-    var displayName: String {
+    public var displayName: String {
         switch self {
         case .english: return "English"
         case .spanish: return "Español"
@@ -24,12 +24,12 @@ nonisolated enum TranscriptionLanguage: String, CaseIterable, Identifiable, Send
     }
 
     /// BCP-47 identifier used to build the `Locale` for `SpeechTranscriber`.
-    var localeIdentifier: String {
+    public var localeIdentifier: String {
         switch self {
         case .english: return "en-US"
         case .spanish: return "es-ES"
         }
     }
 
-    var locale: Locale { Locale(identifier: localeIdentifier) }
+    public var locale: Locale { Locale(identifier: localeIdentifier) }
 }

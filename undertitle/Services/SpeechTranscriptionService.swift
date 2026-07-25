@@ -12,7 +12,7 @@ import Foundation
 import Speech
 
 /// Progress and lifecycle events emitted while transcribing.
-nonisolated enum TranscriptionEvent: Sendable {
+public nonisolated enum TranscriptionEvent: Sendable {
     case preparingModel
     case downloadingModel
     case progress(Double)
@@ -28,17 +28,23 @@ nonisolated protocol Transcribing: Sendable {
 /// Transcribes a video's audio on-device. No UI dependencies, no network for
 /// transcription itself — the network is only touched to download a missing
 /// language model. `nonisolated` so the pipeline runs off the main actor.
-nonisolated struct SpeechTranscriptionService: Transcribing {
+public nonisolated struct SpeechTranscriptionService: Transcribing {
 
     private let extractor: AudioExtractor
 
-    init(extractor: AudioExtractor = AudioExtractor()) {
+    /// Public entry point used by the app, CLI, and MCP server.
+    public init() {
+        self.extractor = AudioExtractor()
+    }
+
+    /// Internal initializer for dependency injection in tests.
+    init(extractor: AudioExtractor) {
         self.extractor = extractor
     }
 
     /// Drives the full transcription and reports progress via the returned stream.
     /// The terminal `.finished` event carries the ordered segments.
-    func events(videoURL: URL, language: TranscriptionLanguage) -> AsyncThrowingStream<TranscriptionEvent, Error> {
+    public func events(videoURL: URL, language: TranscriptionLanguage) -> AsyncThrowingStream<TranscriptionEvent, Error> {
         AsyncThrowingStream { continuation in
             let extractor = self.extractor
             Task {

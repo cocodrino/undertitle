@@ -9,10 +9,12 @@ import Foundation
 
 /// Formats `TranscriptSegment`s as SubRip (`.srt`) text. Pure and synchronous,
 /// which makes it trivial to unit-test.
-nonisolated struct SRTExporter {
+public nonisolated struct SRTExporter {
+
+    public init() {}
 
     /// Builds the full `.srt` document. Each segment becomes one numbered cue.
-    func srtString(from segments: [TranscriptSegment]) -> String {
+    public func srtString(from segments: [TranscriptSegment]) -> String {
         segments.enumerated().map { index, segment in
             let cueNumber = index + 1
             let start = timestamp(segment.start)
@@ -24,7 +26,7 @@ nonisolated struct SRTExporter {
 
     /// Formats a time in seconds as `HH:MM:SS,mmm` (SubRip uses a comma before
     /// the milliseconds).
-    func timestamp(_ seconds: TimeInterval) -> String {
+    public func timestamp(_ seconds: TimeInterval) -> String {
         let clamped = max(0, seconds)
         let totalMilliseconds = Int((clamped * 1000).rounded())
         let milliseconds = totalMilliseconds % 1000

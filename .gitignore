@@ -20,6 +20,7 @@ xcuserdata/
 
 # Release build artifacts
 build_release/
+build_debug/
 dist/
 
 # AI / tooling scratch (not part of the app)

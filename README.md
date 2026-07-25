@@ -127,6 +127,53 @@ per-word timing into subtitle-sized lines (broken at sentence ends, capped at
 ~6 seconds each). That's the difference between subtitles that drift and
 subtitles that hit every line on time.
 
+## 🤖 CLI & MCP server (for scripts and agents)
+
+Undertitle also ships as a **command-line tool** and an **MCP server**, so you can
+script subtitle generation or let an AI agent do it — reusing the exact same
+on-device pipeline as the app.
+
+### Install (Homebrew)
+
+```bash
+brew install --HEAD cocodrino/undertitle/undertitle
+```
+
+Homebrew builds it from source on your machine, so the binaries **aren't
+quarantined** — no Gatekeeper prompt. You get two commands: `undertitle` (CLI)
+and `undertitle-mcp` (MCP server).
+
+> No Homebrew? Clone the repo and run `swift build -c release`; the binaries land
+> in `.build/release/`.
+
+### CLI
+
+```bash
+# English (default) — writes clip.srt next to the video
+undertitle transcribe clip.mp4
+
+# Spanish, with a custom output path
+undertitle transcribe entrevista.mov --language es --output subs.srt
+
+# Print the .srt to stdout instead of a file
+undertitle transcribe clip.mp4 --output -
+```
+
+### MCP server
+
+Point your agent's MCP config at the `undertitle-mcp` binary:
+
+```json
+{
+  "mcpServers": {
+    "undertitle": { "command": "undertitle-mcp" }
+  }
+}
+```
+
+It exposes one tool — **`transcribe_video`**: takes `path` (required) and
+`language` (`en` | `es`, default `en`), and returns the `.srt` text.
+
 ## 📦 Sharing a build with a friend (optional)
 
 Want to hand the app to someone without Xcode? In Xcode: **Product → Archive →
