@@ -12,8 +12,8 @@ class Undertitle < Formula
   desc "On-device .srt subtitle generator for macOS (CLI + MCP server)"
   homepage "https://github.com/cocodrino/undertitle"
   license "MIT"
-  url "https://github.com/cocodrino/undertitle/archive/refs/tags/v0.2.0.tar.gz"
-  sha256 "87509ee3ce88991c5d5edef95f147b78c6e8af954cb58bc395895ecc37771525"
+  url "https://github.com/cocodrino/undertitle/archive/refs/tags/v0.2.1.tar.gz"
+  sha256 "dc5aa3b0b7b273d046e47c15294cab7e4b70076bee9c131d957c32ccdc2b0881"
   head "https://github.com/cocodrino/undertitle.git", branch: "main"
 
   depends_on macos: :tahoe # macOS 26+
