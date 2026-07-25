@@ -66,10 +66,21 @@ minutes."
 
 1. Grab the latest **[`Undertitle-macos-arm64.zip`](https://github.com/cocodrino/undertitle/releases/latest)** from Releases.
 2. Unzip it and drag **`undertitle.app`** into your **Applications** folder.
-3. **First launch only:** right-click the app → **Open** → **Open**.
+3. **First launch only —** because the app isn't notarized by Apple (it's a
+   free, open-source build), macOS blocks it with an *"Apple could not verify…"*
+   message. Clear it with one command in Terminal:
 
-> That right-click step is needed just once, because the app isn't notarized by
-> Apple (it's a free, open-source build). After that it opens normally.
+   ```bash
+   xattr -dr com.apple.quarantine /Applications/undertitle.app
+   ```
+
+   Then just double-click the app. (If you kept it in Downloads instead, point
+   the command at that path.)
+
+> **Why?** That command removes the "downloaded from the internet" quarantine
+> flag macOS adds. It doesn't change the app — it just tells macOS you trust it.
+> Prefer clicking? You can instead open the app once, then go to **System
+> Settings → Privacy & Security** and press **"Open Anyway"**.
 
 #### Option B — Build from source
 
