@@ -12,11 +12,9 @@ class Undertitle < Formula
   desc "On-device .srt subtitle generator for macOS (CLI + MCP server)"
   homepage "https://github.com/cocodrino/undertitle"
   license "MIT"
+  url "https://github.com/cocodrino/undertitle/archive/refs/tags/v0.2.0.tar.gz"
+  sha256 "87509ee3ce88991c5d5edef95f147b78c6e8af954cb58bc395895ecc37771525"
   head "https://github.com/cocodrino/undertitle.git", branch: "main"
-
-  # For a stable release, cut a tag that includes the SwiftPM package, then set:
-  # url "https://github.com/cocodrino/undertitle/archive/refs/tags/vX.Y.Z.tar.gz"
-  # sha256 "<shasum -a 256 of that tarball>"
 
   depends_on macos: :tahoe # macOS 26+
   depends_on xcode: ["26.0", :build]
