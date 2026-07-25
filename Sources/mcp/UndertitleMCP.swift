@@ -51,10 +51,10 @@ struct UndertitleMCP {
         // Handle tool calls.
         await server.withMethodHandler(CallTool.self) { params in
             guard params.name == "transcribe_video" else {
-                return .init(content: [.text("Unknown tool: \(params.name)")], isError: true)
+                return result("Unknown tool: \(params.name)", isError: true)
             }
             guard let path = params.arguments?["path"]?.stringValue else {
-                return .init(content: [.text("Missing required 'path' argument.")], isError: true)
+                return result("Missing required 'path' argument.", isError: true)
             }
 
             let langRaw = params.arguments?["language"]?.stringValue ?? "en"
@@ -63,29 +63,34 @@ struct UndertitleMCP {
             case "en", "english": language = .english
             case "es", "spanish", "español", "espanol": language = .spanish
             default:
-                return .init(content: [.text("Unsupported language '\(langRaw)'. Use 'en' or 'es'.")], isError: true)
+                return result("Unsupported language '\(langRaw)'. Use 'en' or 'es'.", isError: true)
             }
 
             let url = URL(fileURLWithPath: path)
             guard FileManager.default.fileExists(atPath: url.path) else {
-                return .init(content: [.text("File not found: \(path)")], isError: true)
+                return result("File not found: \(path)", isError: true)
             }
 
             do {
                 let service = SpeechTranscriptionService()
                 var segments: [TranscriptSegment] = []
                 for try await event in service.events(videoURL: url, language: language) {
-                    if case .finished(let result) = event { segments = result }
+                    if case .finished(let cues) = event { segments = cues }
                 }
                 let srt = SRTExporter().srtString(from: segments)
-                return .init(content: [.text(srt)], isError: false)
+                return result(srt)
             } catch {
-                return .init(content: [.text("Transcription failed: \(error.localizedDescription)")], isError: true)
+                return result("Transcription failed: \(error.localizedDescription)", isError: true)
             }
         }
 
         let transport = StdioTransport()
         try await server.start(transport: transport)
         await server.waitUntilCompleted()
+    }
+
+    /// Builds a `CallTool` result carrying a single text block.
+    private static func result(_ text: String, isError: Bool = false) -> CallTool.Result {
+        .init(content: [.text(text: text, annotations: nil, _meta: nil)], isError: isError)
     }
 }

@@ -7,6 +7,7 @@
 
 @preconcurrency import AVFoundation
 import Foundation
+import os
 
 /// Wraps `AVAudioConverter` to turn buffers read from the video into the
 /// `analyzerFormat` that `SpeechAnalyzer` reports as best.
@@ -41,15 +42,17 @@ nonisolated final class BufferConverter {
         }
 
         var nsError: NSError?
-        var consumed = false
+        // The input buffer is offered exactly once; the flag lives behind a lock
+        // so the `@Sendable` fill closure never captures a mutable var.
+        let consumed = OSAllocatedUnfairLock(initialState: false)
         let status = converter.convert(to: output, error: &nsError) { _, inputStatus in
-            if consumed {
-                inputStatus.pointee = .noDataNow
-                return nil
+            let wasConsumed = consumed.withLock { flag in
+                let previous = flag
+                flag = true
+                return previous
             }
-            consumed = true
-            inputStatus.pointee = .haveData
-            return buffer
+            inputStatus.pointee = wasConsumed ? .noDataNow : .haveData
+            return wasConsumed ? nil : buffer
         }
 
         guard status != .error else { throw Failure.conversionFailed(nsError) }
