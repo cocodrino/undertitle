@@ -15,7 +15,7 @@ struct UndertitleMCP {
     static func main() async throws {
         let server = Server(
             name: "undertitle",
-            version: "0.1.0",
+            version: "0.2.1",
             capabilities: .init(tools: .init(listChanged: false))
         )
 

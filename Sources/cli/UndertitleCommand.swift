@@ -14,7 +14,7 @@ struct UndertitleCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "undertitle",
         abstract: "Generate .srt subtitles from a video, fully on-device.",
-        version: "0.1.0",
+        version: "0.2.1",
         subcommands: [Transcribe.self],
         defaultSubcommand: Transcribe.self
     )
