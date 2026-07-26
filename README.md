@@ -26,25 +26,9 @@ Because it runs **100% on your Mac**, it's private by design and works on a
 plane with no Wi-Fi. No account, no credit card, no "you've used your 10 free
 minutes."
 
-```
-┌───────────────────────────────────────────────┐
-│  Undertitle                                     │
-│                                                 │
-│   ┌─────────────────────────────────────────┐  │
-│   │                                         │  │
-│   │        🎬  Drag your video here         │  │
-│   │        MP4, MOV, and more               │  │
-│   │                                         │  │
-│   └─────────────────────────────────────────┘  │
-│                                                 │
-│   Language:  [ English ▾ ]                      │
-│                                                 │
-│   Transcribing…  ██████████░░░░░  62%           │
-│                                                 │
-│   [ ⤓ Download subtitles.srt ]                  │
-│                                                 │
-└───────────────────────────────────────────────┘
-```
+<p align="center">
+  <img src="docs/screenshot.png" alt="Undertitle app window — drop a video, pick a language, get subtitles" width="460">
+</p>
 
 ## ✨ Why you'll like it
 
